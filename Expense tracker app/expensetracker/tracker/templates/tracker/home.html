@@ -1,0 +1,53 @@
+<!-- tracker/templates/tracker/home.html -->
+{% extends "tracker/base.html" %}
+
+{% block title %}Home - Expense Tracker{% endblock %}
+
+{% block content %}
+<div class="tracker-container text-center">
+    <h2>Expense Tracker</h2>
+    
+    <h4 class="mt-4">YOUR BALANCE</h4>
+    <h2>${{ balance }}</h2>
+
+    <div class="d-flex justify-content-around my-4">
+        <div class="border p-3 rounded text-center w-45">
+            <h6>INCOME</h6>
+            <p class="card-income">+${{ total_income }}</p>
+        </div>
+        <div class="border p-3 rounded text-center w-45">
+            <h6>EXPENSE</h6>
+            <p class="card-expense">-${{ total_expenses }}</p>
+        </div>
+    </div>
+
+    <hr>
+    <h5 class="text-start">History</h5>
+    <ul class="list-group mb-4 text-start">
+        {% for expense in expenses %}
+            <li class="list-group-item d-flex justify-content-between">
+                {{ expense.name }}
+                <span class="{% if expense.expense_type == 'expense' %}card-expense{% else %}card-income{% endif %}">
+                    {% if expense.expense_type == 'expense' %}-{% endif %}${{ expense.amount }}
+                </span>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No transactions yet.</li>
+        {% endfor %}
+    </ul>
+
+    <h5 class="text-start">Add new transaction</h5>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-2 text-start">
+            <label for="text" class="form-label">Text</label>
+            <input type="text" class="form-control" name="name" placeholder="Enter text..." required>
+        </div>
+        <div class="mb-3 text-start">
+            <label for="amount" class="form-label">Amount <small>(use + for income, - for expense)</small></label>
+            <input type="number" step="0.01" class="form-control" name="amount" placeholder="Enter amount..." required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100" style="background-color: #7c3aed;">Add transaction</button>
+    </form>
+</div>
+{% endblock %}
